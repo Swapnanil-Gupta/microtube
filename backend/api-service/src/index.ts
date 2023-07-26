@@ -1,20 +1,19 @@
-import express from "express";
 import dotenv from "dotenv";
+import express from "express";
 import morgan from "morgan";
-import { unprocessedVideosBucket } from "./lib/storage";
+import signedUrlRouter from "./routes/signedUrl.routes";
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+// middlewares
 app.use(morgan("common"));
 app.use(express.json());
 
-app.get("/", async (req, res) => {
-  const [files] = await unprocessedVideosBucket.getFiles();
-  res.json(files);
-});
+// routers
+app.use("/signedUrl", signedUrlRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
