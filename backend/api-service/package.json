@@ -13,7 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google-cloud/storage": "^6.12.0",
+    "@aws-sdk/client-s3": "^3.378.0",
+    "@aws-sdk/s3-request-presigner": "^3.378.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "file-extension": "^4.0.5",
@@ -23,6 +25,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.4",
     "@types/node": "^20.4.5",
