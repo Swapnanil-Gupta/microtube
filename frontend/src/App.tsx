@@ -16,8 +16,8 @@ function App() {
         "http://localhost:3000/api/signed-url",
         {
           params: {
-            fileName: encodeURIComponent(file.name),
-            fileType: encodeURIComponent(file.type),
+            title: encodeURIComponent(file.name),
+            mimeType: encodeURIComponent(file.type),
           },
         }
       );
