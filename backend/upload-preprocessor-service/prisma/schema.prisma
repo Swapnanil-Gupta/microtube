@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Visibility {
+  PRIVATE
+  PUBLIC
+}
+
+enum VideoStatus {
+  UPLOADED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+model User {
+  id       String    @id @default(cuid())
+  username String    @unique
+  password String
+  videos   Video[]
+  comments Comment[]
+}
+
+model Video {
+  id             String      @id
+  title          String      @db.VarChar(500)
+  status         VideoStatus
+  videoUrl       String?     @db.VarChar(500)
+  thumbnailUrl   String?     @db.VarChar(500)
+  visibility     Visibility
+  uploadedBy     String
+  uploadedDate   DateTime    @default(now())
+  likeCount      Int         @default(0)
+  dislikeCount   Int         @default(0)
+  comments       Comment[]
+  metadata       Metadata?
+  uploadedByUser User        @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+}
+
+model Metadata {
+  videoId  String @id
+  duration Int?
+  bitrate  Int?
+  size     Int?
+  video    Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id           String @id @default(cuid())
+  userId       String
+  videoId      String
+  message      String @db.VarChar(1000)
+  likeCount    Int    @default(0)
+  dislikeCount Int    @default(0)
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video        Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
