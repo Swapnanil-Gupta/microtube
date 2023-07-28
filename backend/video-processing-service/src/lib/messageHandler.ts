@@ -1,54 +1,59 @@
 import { Message } from "@aws-sdk/client-sqs";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import s3Client from "./s3Client";
-import fs from "fs";
 import path from "path";
-import ffmpeg from "./ffmpeg";
+import fs from "fs";
+import { downloadFile, uploadFile } from "./s3Client";
+import { generateThumbnail, getVideoMetadata, scaleVideo } from "./ffmpeg";
 
 export default async function messageHandler(message: Message) {
-  if (!message.Body) return;
-
-  const body = JSON.parse(message.Body);
-  const record = body?.Records[0];
-  const uploadBucket = record?.s3?.bucket.name;
-  const uploadedVideoKey = record?.s3?.object.key;
-
-  if (!uploadBucket || !uploadedVideoKey) return;
-
-  console.info(
-    `Attempting to download file (${uploadedVideoKey}) from bucket: (${uploadBucket})`
-  );
-  const command = new GetObjectCommand({
-    Bucket: uploadBucket,
-    Key: uploadedVideoKey,
-  });
-
-  const item = await s3Client.send(command);
-  const data = await item.Body?.transformToByteArray();
-
-  if (!data) {
-    console.error("empty body received from aws s3 instead of the file");
+  if (!message.Body) {
+    console.error("Empty message received from SQS. Aborting.");
     return;
   }
 
-  let outDir = "./downloads/";
-  const savePath = path.join(outDir, uploadedVideoKey);
-  console.info("Out Directory" + outDir);
+  const body = JSON.parse(message.Body);
+  const s3Record = body?.Records?.[0];
+  const videoBucket = s3Record?.s3?.bucket?.name as string;
+  const videoFilename = s3Record?.s3?.object?.key as string;
 
-  if (!fs.existsSync(outDir)) {
-    console.info("Creating directory");
-    fs.mkdirSync(outDir);
-  } else {
-    console.info("Directory already exist");
+  if (!videoBucket || !videoFilename) {
+    console.error("Bucket or file key is missing. Aborting.");
+    return;
   }
 
-  console.info(`Saving video to path: ${savePath}`);
-  await fs.writeFile(savePath, data, (err) => {
-    if (err) {
-      console.error("Failed to save the file to disk");
-      return;
-    }
-    console.info("File saved successfully");
-    ffmpeg(savePath).outputOptions("-vf", "scale=-1:360").save("test.mp4");
-  });
+  const [videoId, ext] = videoFilename.split(".");
+  const tempDir = `./temp/${videoId}`;
+
+  // TODO: Handle Error
+  try {
+    const destBucket = process.env.PROCESSED_VIDEO_BUCKET_NAME!;
+    const origVideoPath = await downloadFile(
+      videoFilename,
+      videoBucket,
+      tempDir
+    );
+
+    // 480p scaling
+    const video480pFilename = `${videoId}_480p.${ext}`;
+    const video480pPath = path.join(tempDir, video480pFilename);
+    await scaleVideo(origVideoPath, video480pPath);
+    await uploadFile(video480pFilename, destBucket, video480pPath);
+
+    // Thumbnail generation
+    const thumbnailFilename = `${videoId}_thumbnail.jpeg`;
+    const thumbnailPath = path.join(tempDir, thumbnailFilename);
+    await generateThumbnail(origVideoPath, thumbnailPath);
+    await uploadFile(
+      `thumbnails/${thumbnailFilename}`,
+      destBucket,
+      thumbnailPath
+    );
+
+    // TODO: duration
+    const meta = await getVideoMetadata(origVideoPath);
+    console.log(meta.format.duration);
+  } catch (err) {
+    throw err;
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
 }
