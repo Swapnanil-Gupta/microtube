@@ -37,7 +37,7 @@ export const generateSignedUrl = async (req: Request, res: Response) => {
       ContentType: mimeType,
       Metadata: {
         title,
-        "uploaded-by": "12345", // TODO: add user id
+        userid: "12345", // TODO: add user id
       },
     });
     const uploadUrl = await getSignedUrl(s3Client, command, {

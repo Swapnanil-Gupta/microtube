@@ -7,39 +7,43 @@ const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
-async function uploadFile(filename: string, bucket: string, filePath: string) {
+async function uploadFile(filename: string, filePath: string) {
   const fileStream = fs.createReadStream(filePath);
   const command = new PutObjectCommand({
-    Bucket: bucket,
+    Bucket: process.env.PROCESSED_VIDEO_BUCKET_NAME,
     Key: filename,
     Body: fileStream,
   });
   await s3Client.send(command);
 }
 
-async function downloadFile(filename: string, bucket: string, destDir: string) {
+async function downloadFile(filename: string, destDir: string) {
   const command = new GetObjectCommand({
-    Bucket: bucket,
+    Bucket: process.env.UNPROCESSED_VIDEO_BUCKET_NAME,
     Key: filename,
   });
 
   try {
-    const item = await s3Client.send(command);
-    const data = await item.Body?.transformToByteArray();
+    const { Body: body, Metadata: meta } = await s3Client.send(command);
+    const data = await body?.transformToByteArray();
     if (!data) {
       throw new Error(
         "Failed to download the file. Received empty data from S3"
       );
     }
     if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-    const savePath = path.join(destDir, filename);
-    fs.writeFileSync(savePath, data);
-    return savePath;
+    const savedPath = path.join(destDir, filename);
+    fs.writeFileSync(savedPath, data);
+    return { savedPath, meta };
   } catch (err) {
     console.error(err);
     throw err;
   }
 }
 
+function getFileUrl(fileName: string) {
+  return `https://${process.env.PROCESSED_VIDEO_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+}
+
 export default s3Client;
-export { uploadFile, downloadFile };
+export { uploadFile, downloadFile, getFileUrl };
