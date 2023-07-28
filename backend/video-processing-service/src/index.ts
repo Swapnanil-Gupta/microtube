@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { Consumer } from "sqs-consumer";
 import sqsClient from "./lib/sqsClient";
-import messageHandler from "./lib/messageHandler";
+import messageHandler from "./messageHandler";
 
 dotenv.config();
 

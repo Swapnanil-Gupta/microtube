@@ -1,9 +1,9 @@
 import { Message } from "@aws-sdk/client-sqs";
 import path from "path";
 import fs from "fs";
-import { downloadFile, getFileUrl, uploadFile } from "./s3Client";
-import { generateThumbnail, getVideoMetadata, scaleVideo } from "./ffmpeg";
-import prisma from "./prisma";
+import { downloadFile, getFileUrl, uploadFile } from "./lib/s3Client";
+import { generateThumbnail, getVideoMetadata, scaleVideo } from "./lib/ffmpeg";
+import prisma from "./lib/prisma";
 
 export default async function messageHandler(message: Message) {
   if (!message.Body) {

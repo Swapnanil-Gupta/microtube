@@ -1,7 +1,7 @@
 import { Message } from "@aws-sdk/client-sqs";
-import { getObjectMetadata } from "./s3Client";
-import { sendMessage } from "./sqsClient";
-import prisma from "./prisma";
+import { getObjectMetadata } from "./lib/s3Client";
+import { sendMessage } from "./lib/sqsClient";
+import prisma from "./lib/prisma";
 
 export default async function messageHandler(message: Message) {
   if (!message.Body) {
@@ -42,7 +42,7 @@ export default async function messageHandler(message: Message) {
     data: {
       id: videoId,
       title,
-      uploadedBy: userId,
+      userId,
       status: "UPLOADED",
       visibility: "PRIVATE",
     },
