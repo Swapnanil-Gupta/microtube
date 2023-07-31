@@ -44,7 +44,6 @@ export default async function messageHandler(message: Message) {
       title,
       userId,
       status: "UPLOADED",
-      visibility: "PRIVATE",
     },
   });
 

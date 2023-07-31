@@ -10,11 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Visibility {
-  PRIVATE
-  PUBLIC
-}
-
 enum VideoStatus {
   UPLOADED
   PROCESSING
@@ -28,9 +23,8 @@ model Video {
   status       VideoStatus
   videoUrl     String?     @db.VarChar(500)
   thumbnailUrl String?     @db.VarChar(500)
-  visibility   Visibility
   userId       String
-  uploadedDate DateTime    @default(now())
+  uploadedAt   DateTime    @default(now())
   likeCount    Int         @default(0)
   dislikeCount Int         @default(0)
   comments     Comment[]
@@ -46,11 +40,12 @@ model Metadata {
 }
 
 model Comment {
-  id           String @id @default(cuid())
+  id           String   @id @default(cuid())
   userId       String
   videoId      String
-  message      String @db.VarChar(1000)
-  likeCount    Int    @default(0)
-  dislikeCount Int    @default(0)
-  video        Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  message      String   @db.VarChar(1000)
+  likeCount    Int      @default(0)
+  dislikeCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  video        Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
 }

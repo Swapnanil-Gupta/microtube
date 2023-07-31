@@ -2,9 +2,11 @@ import Link from "next/link";
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-white dark:bg-neutral-950 border-t dark:border-t-neutral-700">
+    <footer className="bg-neutral-100 dark:bg-neutral-800">
       <div className="container py-4 text-sm">
-        Built by Swapnanil Gupta. The source code is available on{" "}
+        Microtube is a distributed and extensible system that offers a small
+        subset of Youtube&apos;s functionality. The source code and architecture
+        is available on{" "}
         <Link
           className="font-medium underline underline-offset-4"
           href="https://github.com/Swapnanil-Gupta/microtube"

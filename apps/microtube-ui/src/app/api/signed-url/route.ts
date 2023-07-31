@@ -14,21 +14,22 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const title = searchParams.get("title");
-  const mimeType = searchParams.get("mimeType");
+  const fileName = searchParams.get("file_name");
+  const mimeType = searchParams.get("mime_type");
 
-  if (!title || !mimeType) {
+  if (!title || !fileName || !mimeType) {
     return NextResponse.json(
-      { error: "title and mimeType are required" },
+      { error: "title, file_name and mime_type are required" },
       { status: 400 }
     );
   }
   if (!mimeType.includes("video")) {
-    return NextResponse.json({ error: "Invalid mimeType" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid mime-type" }, { status: 400 });
   }
 
   try {
     const videoId = nanoid();
-    const extension = title.split(".")[1];
+    const extension = fileName.split(".")[1];
     const s3FileName = `${videoId}.${extension}`;
 
     const command = new PutObjectCommand({
