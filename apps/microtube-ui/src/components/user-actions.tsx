@@ -4,6 +4,7 @@ import { Input } from "./ui/input";
 import UserDropdown from "./user-dropdown";
 import SignInButton from "./signin-button";
 import UploadDialogTrigger from "./upload-dialog-trigger";
+import VideoSearch from "./video-search";
 
 export default async function UserActions() {
   const session = await getServerSession(authOptions);
@@ -22,7 +23,7 @@ export default async function UserActions() {
           )}
         </div>
         <div className="sm:order-1 grow sm:max-w-md">
-          <Input placeholder="Search" />
+          <VideoSearch />
         </div>
       </div>
     </div>

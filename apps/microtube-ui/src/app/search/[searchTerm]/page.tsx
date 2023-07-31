@@ -1,20 +1,15 @@
-import { getServerSession } from "next-auth/next";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import authOptions from "@/lib/authOptions";
+import { GetVideosResponse } from "@/types";
 import VideoGrid from "@/components/video-grid";
 import VideoGridItem from "@/components/video-grid-item";
-import { GetVideosResponse } from "@/types";
 import Pager from "@/components/pager";
 
-export default async function MyUploads({
+export default async function Search({
+  params: { searchTerm },
   searchParams,
 }: {
+  params: { searchTerm: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const session = await getServerSession(authOptions);
-  if (!session) return redirect("/");
-
   const page =
     typeof searchParams?.page === "string" ? Number(searchParams.page) : 1;
   const perPage =
@@ -23,9 +18,8 @@ export default async function MyUploads({
       : 25;
 
   const response = await fetch(
-    `http://localhost:3000/api/user/uploads?page=${page}&per_page=${perPage}`,
+    `http://localhost:3000/api/video?title=${searchTerm}&page=${page}&per_page=${perPage}`,
     {
-      headers: headers(),
       cache: "no-store",
     }
   );
@@ -33,19 +27,21 @@ export default async function MyUploads({
 
   return (
     <main className="py-8">
-      <h1 className="font-semibold text-3xl md:text-4xl mb-2">My Uploads</h1>
+      <h1 className="font-semibold text-3xl md:text-4xl mb-2">
+        Showing results for &quot;{searchTerm}&quot;
+      </h1>
       <p className="text-neutral-500 mb-4">
-        All the videos that you&apos;ve uploaded
+        Found {total} video{total != 1 && "s"}
       </p>
       <Pager
-        pageUrl="/my-uploads"
+        pageUrl={`/search/${searchTerm}`}
         total={total}
         page={page}
         perPage={perPage}
       />
       <VideoGrid>
         {videos.map((video) => (
-          <VideoGridItem key={video.id} video={video} />
+          <VideoGridItem key={video.id} video={video} showUploadedBy />
         ))}
       </VideoGrid>
     </main>

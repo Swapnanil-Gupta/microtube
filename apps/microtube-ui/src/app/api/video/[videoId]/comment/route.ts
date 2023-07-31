@@ -14,7 +14,7 @@ export async function GET(
   };
 
   try {
-    const total = prisma.comment.count({
+    const total = await prisma.comment.count({
       where: {
         videoId,
       },

@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   };
 
   try {
-    const total = prisma.video.count({
+    const total = await prisma.video.count({
       where: {
         title: {
           contains: queryParams.title,

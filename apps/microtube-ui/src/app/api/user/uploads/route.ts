@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     perPage: Number(searchParams.get("per_page")) || 25,
   };
   try {
-    const total = prisma.video.count({
+    const total = await prisma.video.count({
       where: {
         userId,
       },

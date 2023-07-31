@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Icons from "@/lib/icons";
 import { useToast } from "@/hooks/use-toast";
+import { GetSignedUrlResponse } from "@/types";
 
 export default function UploadDialogTrigger() {
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -43,7 +44,10 @@ export default function UploadDialogTrigger() {
         `/api/signed-url?title=${title}&file_name=${file.name}&mime_type=${file.type}`
       );
       if (!signedUrlResponse.ok) throw new Error("Failed to fetch signed url");
-      const { signedUrl } = await signedUrlResponse.json();
+      const {
+        data: { signedUrl },
+      } = (await signedUrlResponse.json()) as GetSignedUrlResponse;
+
       const fileUploadResponse = await fetch(signedUrl, {
         method: "PUT",
         body: file,
@@ -52,6 +56,7 @@ export default function UploadDialogTrigger() {
         },
       });
       if (!fileUploadResponse.ok) throw new Error("Failed to upload video");
+
       toast({
         title: "Video uploaded successfully",
         description: "It should be available within a few minutes",

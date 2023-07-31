@@ -44,7 +44,7 @@ export async function GET(request: Request) {
     const signedUrl = await getSignedUrl(s3Client, command, {
       expiresIn: 15 * 60,
     });
-    return NextResponse.json({ signedUrl });
+    return NextResponse.json({ data: signedUrl });
   } catch (err) {
     console.error(err);
     return NextResponse.json(

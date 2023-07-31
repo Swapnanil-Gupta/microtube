@@ -15,6 +15,8 @@ import {
   CalendarClock,
   Cpu,
   AlertTriangle,
+  ChevronRight,
+  ChevronLeft,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +37,8 @@ const Icons = {
   ago: CalendarClock,
   yetToBeProcessed: Cpu,
   failed: AlertTriangle,
+  prev: ChevronLeft,
+  next: ChevronRight,
 };
 
 export default Icons;
