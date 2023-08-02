@@ -39,16 +39,19 @@ export default function UserDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Link href="/my-uploads">
+        <DropdownMenuItem asChild>
+          <Link href="/my-uploads" className="cursor-pointer">
             <span className="flex items-center">
               <Icons.myUploads className="h-4 w-4 mr-2" />
               My uploads
             </span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleSignOut}>
-          <span className="flex items-center cursor-pointer">
+        <DropdownMenuItem asChild>
+          <span
+            className="flex items-center cursor-pointer"
+            onClick={handleSignOut}
+          >
             <Icons.singOut className="h-4 w-4 mr-2" />
             Sign out
           </span>

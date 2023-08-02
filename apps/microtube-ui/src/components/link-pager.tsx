@@ -10,7 +10,7 @@ type Props = {
   perPage: number;
 };
 
-export default function Pager({ pageUrl, total, page, perPage }: Props) {
+export default function LinkPager({ pageUrl, total, page, perPage }: Props) {
   const noOfPages = Math.ceil(total / perPage);
 
   return (
@@ -25,6 +25,7 @@ export default function Pager({ pageUrl, total, page, perPage }: Props) {
         )}
       >
         <Icons.prev className="h-4 w-4" />
+        <span className="sr-only">Previous page</span>
       </Link>
       <Link
         href={
@@ -40,6 +41,7 @@ export default function Pager({ pageUrl, total, page, perPage }: Props) {
         )}
       >
         <Icons.next className="h-4 w-4" />
+        <span className="sr-only">Next page</span>
       </Link>
     </div>
   );

@@ -1,11 +1,11 @@
 import "./globals.css";
+
 import type { Metadata } from "next";
 import { fontSans } from "@/lib/fonts";
-import AuthProvider from "@/components/auth-provider";
-import ThemeProvider from "@/components/theme-provider";
+import clsx from "clsx";
+import Providers from "@/components/providers";
 import TailwindIndicator from "@/components/tailwind-indicator";
 import SiteHeader from "@/components/site-header";
-import clsx from "clsx";
 import { Toaster } from "@/components/ui/toaster";
 import SiteFooter from "@/components/site-footer";
 import UserActions from "@/components/user-actions";
@@ -28,17 +28,15 @@ export default async function RootLayout({
           fontSans.className
         )}
       >
-        <AuthProvider>
-          <ThemeProvider>
-            <div className="relative flex min-h-screen flex-col">
-              <SiteHeader />
-              <UserActions />
-              <div className="flex-1 container">{children}</div>
-              <SiteFooter />
-            </div>
-            <TailwindIndicator />
-          </ThemeProvider>
-        </AuthProvider>
+        <Providers>
+          <div className="relative flex min-h-screen flex-col">
+            <SiteHeader />
+            <UserActions />
+            <div className="flex-1 container">{children}</div>
+            <SiteFooter />
+          </div>
+        </Providers>
+        <TailwindIndicator />
         <Toaster />
       </body>
     </html>

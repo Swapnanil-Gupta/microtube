@@ -5,13 +5,16 @@ import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { Skeleton } from "./ui/skeleton";
 import Icons from "@/lib/icons";
-import { VideoWithMetadata } from "@/types";
+import { FullVideo } from "@/types";
+import formatDuration from "format-duration";
 
 export default function VideoGridItem({
   video,
+  showStats = true,
   showUploadedBy = false,
 }: {
-  video: VideoWithMetadata;
+  video: FullVideo;
+  showStats?: boolean;
   showUploadedBy?: boolean;
 }) {
   const status = video.status;
@@ -38,7 +41,9 @@ export default function VideoGridItem({
   };
 
   const label = {
-    PROCESSED: `${video.metadata?.duration || "N/A"}s`,
+    PROCESSED: video.metadata?.duration
+      ? formatDuration(video.metadata?.duration * 1000)
+      : "N/A",
     UPLOADED: "Yet to be processed",
     PROCESSING: "Processing",
     FAILED: "Failed",
@@ -48,7 +53,7 @@ export default function VideoGridItem({
     <Link href={`/watch/${video.id}`} key={video.id}>
       <div
         className={clsx(
-          "flex flex-col gap-y-3 rounded-lg group",
+          "flex flex-col gap-y-3 rounded-lg group bg-neutral-100 dark:bg-neutral-800 shadow-md hover:shadow-lg transition-shadow duration-300 p-2 md:p-3",
           status === "FAILED" && "bg-neutral-100 dark:bg-neutral-800"
         )}
       >
@@ -67,17 +72,17 @@ export default function VideoGridItem({
           </span>
         </div>
         <div className="flex flex-col gap-y-1">
-          <p className="font-semibold line-clamp-2 text-md md:text-lg">
+          <p className="font-semibold line-clamp-2 text-base md:text-lg">
             {video.title}
           </p>
           {showUploadedBy && (
-            <span className="flex gap-1 items-center text-neutral-500 font-medium">
-              <Icons.user className="h-5 w-5" />
+            <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 font-medium">
+              <Icons.user className="h-4 w-4 md:h-5 md:w-5" />
               {video.userId}
             </span>
           )}
-          <span className="text-sm md:text-md flex gap-1 items-center text-neutral-500">
-            <Icons.ago className="h-5 w-5" />
+          <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500">
+            <Icons.ago className="h-4 w-4 md:h-5 md:w-5" />
             {formatDistanceToNow(new Date(video.uploadedAt))} ago
           </span>
         </div>

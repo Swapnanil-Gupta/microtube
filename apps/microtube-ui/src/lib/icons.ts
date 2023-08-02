@@ -17,6 +17,10 @@ import {
   AlertTriangle,
   ChevronRight,
   ChevronLeft,
+  Download,
+  ThumbsUp,
+  ThumbsDown,
+  UserPlus,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,6 +43,10 @@ const Icons = {
   failed: AlertTriangle,
   prev: ChevronLeft,
   next: ChevronRight,
+  download: Download,
+  like: ThumbsUp,
+  dislike: ThumbsDown,
+  uploader: UserPlus,
 };
 
 export default Icons;

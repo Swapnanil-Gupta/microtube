@@ -24,6 +24,7 @@ export default function UploadDialogTrigger() {
   const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    // TODO: ZOD FORM VALIDATION
     event.preventDefault();
     setLoading(true);
 
@@ -41,12 +42,11 @@ export default function UploadDialogTrigger() {
 
     try {
       const signedUrlResponse = await fetch(
-        `/api/signed-url?title=${title}&file_name=${file.name}&mime_type=${file.type}`
+        `http://localhost:3000/api/signed-url?title=${title}&file_name=${file.name}&mime_type=${file.type}`
       );
       if (!signedUrlResponse.ok) throw new Error("Failed to fetch signed url");
-      const {
-        data: { signedUrl },
-      } = (await signedUrlResponse.json()) as GetSignedUrlResponse;
+      const { data: signedUrl } =
+        (await signedUrlResponse.json()) as GetSignedUrlResponse;
 
       const fileUploadResponse = await fetch(signedUrl, {
         method: "PUT",

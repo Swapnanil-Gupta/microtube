@@ -2,16 +2,23 @@ import { getServerSession } from "next-auth/next";
 import authOptions from "@/lib/authOptions";
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { ErrorResponse, GetVideosResponse } from "@/types";
 
 export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json<ErrorResponse>(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
   const userId = session.user?.email;
   if (!userId) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json<ErrorResponse>(
+      { error: "User not found" },
+      { status: 404 }
+    );
   }
 
   const { searchParams } = new URL(request.url);
@@ -34,11 +41,17 @@ export async function GET(request: Request) {
       },
       include: {
         metadata: true,
+        _count: {
+          select: {
+            likes: true,
+            dislikes: true,
+          },
+        },
       },
       take: queryParams.perPage,
       skip: (queryParams.page - 1) * queryParams.perPage,
     });
-    return NextResponse.json({
+    return NextResponse.json<GetVideosResponse>({
       total,
       page: queryParams.page,
       perPage: queryParams.perPage,
@@ -46,7 +59,7 @@ export async function GET(request: Request) {
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json(
+    return NextResponse.json<ErrorResponse>(
       { error: "Unable to fetch user uploads" },
       { status: 500 }
     );

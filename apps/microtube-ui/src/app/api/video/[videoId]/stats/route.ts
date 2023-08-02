@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { ErrorResponse, GetVideoResponse } from "@/types";
+import { ErrorResponse, GetVideoStatsResponse } from "@/types";
 
 export async function GET(
   request: Request,
@@ -8,13 +8,11 @@ export async function GET(
 ) {
   try {
     const { videoId } = params;
-    const video = await prisma.video.findUnique({
+    const videoStats = await prisma.video.findUnique({
       where: {
         id: videoId,
       },
-      include: {
-        metadata: true,
-        videoUrls: true,
+      select: {
         _count: {
           select: {
             likes: true,
@@ -23,7 +21,7 @@ export async function GET(
         },
       },
     });
-    if (!video) {
+    if (!videoStats) {
       return NextResponse.json<ErrorResponse>(
         {
           error: "Video not found",
@@ -31,13 +29,14 @@ export async function GET(
         { status: 404 }
       );
     }
-    return NextResponse.json<GetVideoResponse>({
-      data: video,
+
+    return NextResponse.json<GetVideoStatsResponse>({
+      data: videoStats._count,
     });
   } catch (err) {
     console.error(err);
     return NextResponse.json<ErrorResponse>(
-      { error: "Unable to fetch video" },
+      { error: "Unable to fetch video stats" },
       { status: 500 }
     );
   }

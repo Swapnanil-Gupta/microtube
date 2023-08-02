@@ -1,13 +1,38 @@
-import { Video, VideoStatus, Metadata, Comment } from "@prisma/client";
+import {
+  Video,
+  VideoStatus,
+  VideoUrl,
+  VideoQuality,
+  Metadata,
+  Comment,
+} from "@prisma/client";
+import { ZodIssue } from "zod";
 
-export type { Video, VideoStatus, Metadata };
+export type { Video, VideoStatus, Metadata, VideoUrl, VideoQuality, Comment };
 
-export type VideoWithMetadata = Video & {
-  metadata: Metadata | null;
+export type VideoStats = {
+  likes: number;
+  dislikes: number;
+};
+
+export type VideoEngagement = {
+  liked: boolean;
+  disliked: boolean;
+};
+
+export type FullVideo = Video & {
+  metadata?: Metadata | null;
+  videoUrls?: VideoUrl[] | null;
+  _count: VideoStats;
 };
 
 export type ApiResponse<T> = {
   data: T;
+};
+
+export type ErrorResponse = {
+  error: string;
+  issues?: ZodIssue[];
 };
 
 export type PaginatedApiResponse<T> = ApiResponse<T[]> & {
@@ -16,12 +41,16 @@ export type PaginatedApiResponse<T> = ApiResponse<T[]> & {
   perPage: number;
 };
 
-export type GetVideoResponse = ApiResponse<VideoWithMetadata>;
+export type GetVideoResponse = ApiResponse<FullVideo>;
 
-export type GetVideosResponse = PaginatedApiResponse<VideoWithMetadata>;
+export type GetVideosResponse = PaginatedApiResponse<FullVideo>;
 
-export type GetVideoMetadataResponse = ApiResponse<Metadata>;
+export type GetCommentResponse = ApiResponse<Comment>;
 
 export type GetCommentsResponse = PaginatedApiResponse<Comment>;
 
-export type GetSignedUrlResponse = ApiResponse<{ signedUrl: string }>;
+export type GetVideoStatsResponse = ApiResponse<VideoStats>;
+
+export type GetVideoEngagementResponse = ApiResponse<VideoEngagement>;
+
+export type GetSignedUrlResponse = ApiResponse<string>;

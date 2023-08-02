@@ -16,7 +16,12 @@ export default function VideoSearch() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input name="search" id="search" placeholder="Search by video title" />
+      <Input
+        type="search"
+        name="search"
+        id="search"
+        placeholder="Search by video title"
+      />
     </form>
   );
 }
