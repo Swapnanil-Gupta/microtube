@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum VideoStatus {
+  UPLOADED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum VideoQuality {
+  SD // 360p
+  FSD // 480p
+}
+
+model Video {
+  id           String      @id
+  title        String      @db.VarChar(500)
+  thumbnailUrl String?     @db.VarChar(500)
+  userId       String
+  uploadedAt   DateTime    @default(now())
+  status       VideoStatus
+  videoUrls    VideoUrl[]
+  comments     Comment[]
+  metadata     Metadata?
+  likes        Like[]
+  dislikes     Dislike[]
+}
+
+model Like {
+  userId  String
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@id([userId, videoId])
+}
+
+model Dislike {
+  userId  String
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@id([userId, videoId])
+}
+
+model VideoUrl {
+  videoId String
+  quality VideoQuality
+  url     String       @db.VarChar(500)
+  video   Video        @relation(fields: [videoId], references: [id], onDelete: Cascade)
+
+  @@id([videoId, quality])
+}
+
+model Metadata {
+  videoId  String @id
+  duration Int?
+  video    Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String
+  message   String   @db.VarChar(1000)
+  createdAt DateTime @default(now())
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
