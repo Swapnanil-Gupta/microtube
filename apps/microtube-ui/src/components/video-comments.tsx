@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { FullVideo } from "@/types";
 import useFetchComments from "@/hooks/useFetchComments";
 import Loader from "./loader";
 import { Textarea } from "./ui/textarea";

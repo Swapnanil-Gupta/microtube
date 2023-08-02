@@ -1,3 +1,5 @@
+"use client";
+
 import { useSession } from "next-auth/react";
 import { Toggle } from "@/components/ui/toggle";
 import useFetchStats from "@/hooks/useFetchStats";

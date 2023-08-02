@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
   try {
     const videoId = nanoid();
-    const extension = fileName.split(".")[1];
+    const extension = fileName.split(".").pop();
     const s3FileName = `${videoId}.${extension}`;
 
     const command = new PutObjectCommand({
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       Key: s3FileName,
       ContentType: mimeType,
       Metadata: {
-        title,
+        title: title.replace(/\.[^/.]+$/, ""),
         userid: session.user?.email!,
       },
     });

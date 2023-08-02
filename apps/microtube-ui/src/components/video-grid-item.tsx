@@ -71,20 +71,32 @@ export default function VideoGridItem({
             {label[status]}
           </span>
         </div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-1">
           <p className="font-semibold line-clamp-2 text-base md:text-lg">
             {video.title}
           </p>
           {showUploadedBy && (
-            <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 font-medium">
+            <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400 font-medium">
               <Icons.user className="h-4 w-4 md:h-5 md:w-5" />
               {video.userId}
             </span>
           )}
-          <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500">
+          <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400">
             <Icons.ago className="h-4 w-4 md:h-5 md:w-5" />
             {formatDistanceToNow(new Date(video.uploadedAt))} ago
           </span>
+          {showStats && (
+            <div className="flex items-center pt-1 text-xs md:text-base gap-4 text-neutral-500 dark:text-neutral-400">
+              <span className="flex items-center gap-2">
+                <Icons.like className="h-4 md:w-4" />
+                {video._count.likes}
+              </span>
+              <span className="flex items-center gap-2">
+                <Icons.dislike className="h-4 w-4" />
+                {video._count.dislikes}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </Link>

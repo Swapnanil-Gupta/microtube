@@ -48,6 +48,14 @@ export default function UserDropdown() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
+          <Link href="/my-likes" className="cursor-pointer">
+            <span className="flex items-center">
+              <Icons.myLikes className="h-4 w-4 mr-2" />
+              My Likes
+            </span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <span
             className="flex items-center cursor-pointer"
             onClick={handleSignOut}

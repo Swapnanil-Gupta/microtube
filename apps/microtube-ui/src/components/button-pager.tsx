@@ -1,5 +1,6 @@
+"use client";
+
 import { Button } from "./ui/button";
-import clsx from "clsx";
 import Icons from "@/lib/icons";
 
 type Props = {
