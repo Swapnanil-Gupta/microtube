@@ -22,6 +22,6 @@ export default function useFetchMyUploads(
     queryFn: () => fetchMyUploads(page, perPage),
     initialData,
     enabled: Boolean(userId),
-    refetchInterval: poll ? 3000 : false,
+    refetchInterval: poll ? 5000 : false,
   });
 }

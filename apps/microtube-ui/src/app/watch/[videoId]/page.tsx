@@ -18,7 +18,7 @@ export default async function Watch({
       <p className="text-sm md:text-base text-neutral-500 mb-2">
         You&apos;re watching
       </p>
-      <h1 className="font-semibold text-3xl md:text-4xl mb-10 max-w-lg">
+      <h1 className="font-semibold text-3xl md:text-4xl mb-10 max-w-[900px]">
         {video.title}
       </h1>
       <PlayVideoLayout video={video} />
