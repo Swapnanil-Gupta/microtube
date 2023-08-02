@@ -18,6 +18,5 @@ export default function useFetchEngagement(
     queryKey: ["engagement", videoId, userId],
     queryFn: () => fetchEngagement(videoId),
     enabled: Boolean(userId),
-    staleTime: 0,
   });
 }

@@ -15,10 +15,10 @@ export default async function Watch({
 
   return (
     <main className="py-8">
-      <p className="text-sm md:text-base text-neutral-500">
+      <p className="text-sm md:text-base text-neutral-500 mb-2">
         You&apos;re watching
       </p>
-      <h1 className="font-semibold text-3xl md:text-4xl mb-8 line-clamp-2">
+      <h1 className="font-semibold text-3xl md:text-4xl mb-10 max-w-lg">
         {video.title}
       </h1>
       <PlayVideoLayout video={video} />

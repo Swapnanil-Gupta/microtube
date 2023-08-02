@@ -72,7 +72,7 @@ export default function VideoGridItem({
           </span>
         </div>
         <div className="flex flex-col gap-1">
-          <p className="font-semibold line-clamp-2 text-base md:text-lg">
+          <p className="font-semibold line-clamp-1 text-base md:text-lg">
             {video.title}
           </p>
           {showUploadedBy && (

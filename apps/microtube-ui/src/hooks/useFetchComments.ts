@@ -19,6 +19,5 @@ export default function useFetchComments(
     queryKey: ["comments", videoId, page, perPage],
     queryFn: () => fetchComments(videoId, page, perPage),
     keepPreviousData: true,
-    staleTime: 600_000,
   });
 }

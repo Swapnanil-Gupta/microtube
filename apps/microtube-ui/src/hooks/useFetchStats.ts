@@ -14,6 +14,5 @@ export default function useFetchStats(videoId: string) {
   return useQuery({
     queryKey: ["stats", videoId],
     queryFn: () => fetchStats(videoId),
-    staleTime: 0,
   });
 }

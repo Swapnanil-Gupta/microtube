@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogTrigger,
@@ -15,12 +16,16 @@ import { Label } from "@/components/ui/label";
 import Icons from "@/lib/icons";
 import { useToast } from "@/hooks/use-toast";
 import { GetSignedUrlResponse } from "@/types";
+import axios from "axios";
+import { Progress } from "./ui/progress";
 
 export default function UploadDialogTrigger() {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const { toast } = useToast();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -49,14 +54,19 @@ export default function UploadDialogTrigger() {
       const { data: signedUrl } =
         (await signedUrlResponse.json()) as GetSignedUrlResponse;
 
-      const fileUploadResponse = await fetch(signedUrl, {
-        method: "PUT",
-        body: file,
+      // Axios for upload progress
+      await axios.put(signedUrl, file, {
         headers: {
           "Content-Type": file.type,
         },
+        onUploadProgress: (progress) => {
+          if (progress.total) {
+            setUploadProgress(
+              Math.ceil((progress.loaded / progress.total) * 100)
+            );
+          }
+        },
       });
-      if (!fileUploadResponse.ok) throw new Error("Failed to upload video");
 
       toast({
         title: "Video uploaded successfully",
@@ -64,8 +74,10 @@ export default function UploadDialogTrigger() {
       });
       setFile(null);
       setTitle("");
+      setUploadProgress(0);
       setLoading(false);
       setDialogOpen(false);
+      router.push("/my-uploads");
     } catch (err) {
       toast({
         title: "Unable to upload the video",
@@ -126,6 +138,7 @@ export default function UploadDialogTrigger() {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
+            <Progress value={uploadProgress} />
           </div>
         </form>
         <DialogFooter>

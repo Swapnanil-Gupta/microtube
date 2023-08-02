@@ -2,10 +2,8 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import authOptions from "@/lib/authOptions";
-import VideoGrid from "@/components/video-grid";
-import VideoGridItem from "@/components/video-grid-item";
 import { GetVideosResponse } from "@/types";
-import LinkPager from "@/components/link-pager";
+import MyUploadsLayout from "@/components/my-uploads-layout";
 
 export default async function MyUploads({
   searchParams,
@@ -31,7 +29,7 @@ export default async function MyUploads({
   );
   if (!response.ok) {
   } // TODO: Handle error
-  const { total, data: videos } = (await response.json()) as GetVideosResponse;
+  const data = (await response.json()) as GetVideosResponse;
   // TODO: Handle empty error
 
   return (
@@ -40,23 +38,7 @@ export default async function MyUploads({
       <p className="text-neutral-500 mb-4">
         All the videos that you&apos;ve uploaded
       </p>
-      <LinkPager
-        pageUrl="/my-uploads"
-        total={total}
-        page={page}
-        perPage={perPage}
-      />
-      <VideoGrid>
-        {videos.map((video) => (
-          <VideoGridItem key={video.id} video={video} />
-        ))}
-      </VideoGrid>
-      <LinkPager
-        pageUrl="/my-uploads"
-        total={total}
-        page={page}
-        perPage={perPage}
-      />
+      <MyUploadsLayout initialData={data} page={page} perPage={perPage} />
     </main>
   );
 }

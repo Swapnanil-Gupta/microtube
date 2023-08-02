@@ -15,7 +15,7 @@ export default forwardRef(function VideoPlayer(
   const { toast } = useToast();
   return (
     <video
-      className="w-full"
+      className="w-full h-auto max-w-[900px] mx-auto"
       controls
       poster={thumbnailUrl || ""}
       ref={ref}

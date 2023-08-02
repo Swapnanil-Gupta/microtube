@@ -16,7 +16,7 @@ export default function VideoComments({ videoId }: { videoId: string }) {
   const session = useSession();
   const user = session.data?.user;
 
-  const perPage = 20;
+  const perPage = 25;
   const [page, setPage] = useState(1);
   const [comment, setComment] = useState("");
   const { toast } = useToast();
