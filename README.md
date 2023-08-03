@@ -10,9 +10,12 @@ I have used AWS S3 to store raw/processed videos and generated thumbnails and AW
 ## What it does
 MicroTube offers the following features:
 - Upload a new video
+- Automatic thumbnail generation
+- Video scaling to 360p/480p
 - Browse and watch videos
 - Search videos by title
-- Change the quality of the video (360p/480p)
+- Change the quality of the video when watching (360p/480p)
+- Download vidoes
 - Like/Dislike a video. 
 - Comment on a video.
 - A private page for users to see all their uploads and likes in one place.
