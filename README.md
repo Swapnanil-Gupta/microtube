@@ -6,7 +6,7 @@ MicroTube is a essentially a Youtube clone. However, I did not recreate only the
 
 The UI and API is built using NextJS 13 and the video processing services are written in NodeJS and uses ffmpeg internally to scale videos to 360p/480p, generate thumbnails and read video metadata.
 
-I have used AWS S3 to store raw/processed videos and generated thumbnails and AWS SQS as a message queue for asynchronous communication between API and video processing services.
+I have used AWS S3 to store raw/processed videos and generated thumbnails and AWS SQS as a message queue for asynchronous communication between API and video processing services and a mySQL database to store video urls and metadata.
 ## What it does
 MicroTube offers the following features:
 - Upload a new video
