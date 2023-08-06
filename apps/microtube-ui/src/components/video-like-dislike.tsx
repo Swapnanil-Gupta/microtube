@@ -62,7 +62,7 @@ export default function VideoLikeDislike({ videoId }: { videoId: string }) {
       <Toggle
         variant="outline"
         className="flex items-center gap-2"
-        disabled={engagement.isFetching || mutation.isLoading}
+        // disabled={engagement.isFetching || mutation.isLoading}
         pressed={Boolean(engagement.data?.data.liked)}
         onPressedChange={handleLike}
       >
@@ -79,7 +79,7 @@ export default function VideoLikeDislike({ videoId }: { videoId: string }) {
       <Toggle
         variant="outline"
         className="flex items-center gap-2"
-        disabled={engagement.isFetching || mutation.isLoading}
+        // disabled={engagement.isFetching || mutation.isLoading}
         pressed={Boolean(engagement.data?.data.disliked)}
         onPressedChange={handleDislike}
       >

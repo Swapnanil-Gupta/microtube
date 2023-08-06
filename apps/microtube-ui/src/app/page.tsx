@@ -2,6 +2,7 @@ import { GetVideosResponse } from "@/types";
 import VideoGrid from "@/components/video-grid";
 import VideoGridItem from "@/components/video-grid-item";
 import LinkPager from "@/components/link-pager";
+import NoVideosAlert from "@/components/ui/no-videos-alert";
 
 export default async function Home({
   searchParams,
@@ -22,21 +23,43 @@ export default async function Home({
     }
   );
   if (!response.ok) {
-  } // TODO: Handle error
+    throw new Error("Failed to fetch videos");
+  }
   const { total, data: videos } = (await response.json()) as GetVideosResponse;
-  // TODO: Handle empty error
+  if (!videos) {
+    throw new Error("Failed to fetch videos");
+  }
 
   return (
     <main className="py-8">
       <h1 className="font-semibold text-3xl md:text-4xl mb-2">Browse Videos</h1>
-      <p className="text-neutral-500 mb-4">Discover the most liked videos</p>
-      <LinkPager pageUrl="/" total={total} page={page} perPage={perPage} />
-      <VideoGrid>
-        {videos.map((video) => (
-          <VideoGridItem key={video.id} video={video} showUploadedBy />
-        ))}
-      </VideoGrid>
-      <LinkPager pageUrl="/" total={total} page={page} perPage={perPage} />
+      <p className="text-neutral-500 mb-12">Discover the most liked videos</p>
+      <div className="flex flex-col gap-4">
+        {videos.length === 0 && (
+          <NoVideosAlert message="Be the first to upload a video by signing in." />
+        )}
+        {videos.length > 0 && (
+          <>
+            <LinkPager
+              pageUrl="/"
+              total={total}
+              page={page}
+              perPage={perPage}
+            />
+            <VideoGrid>
+              {videos.map((video) => (
+                <VideoGridItem key={video.id} video={video} showUploadedBy />
+              ))}
+            </VideoGrid>
+            <LinkPager
+              pageUrl="/"
+              total={total}
+              page={page}
+              perPage={perPage}
+            />
+          </>
+        )}
+      </div>
     </main>
   );
 }

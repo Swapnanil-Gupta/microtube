@@ -6,6 +6,7 @@ import VideoGrid from "@/components/video-grid";
 import VideoGridItem from "@/components/video-grid-item";
 import { GetVideosResponse } from "@/types";
 import LinkPager from "@/components/link-pager";
+import NoVideosAlert from "@/components/ui/no-videos-alert";
 
 export default async function MyLikes({
   searchParams,
@@ -30,33 +31,39 @@ export default async function MyLikes({
     }
   );
   if (!response.ok) {
-  } // TODO: Handle error
+    throw new Error("Failed to fetch my likes");
+  }
   const { total, data: videos } = (await response.json()) as GetVideosResponse;
-  // TODO: Handle empty error
+  if (!videos) {
+    throw new Error("Failed to fetch my likes");
+  }
 
   return (
-    <main className="py-8">
-      <h1 className="font-semibold text-3xl md:text-4xl mb-2">My Likes</h1>
-      <p className="text-neutral-500 mb-4">
-        All the videos that you&apos;ve liked
-      </p>
-      <LinkPager
-        pageUrl="/my-uploads"
-        total={total}
-        page={page}
-        perPage={perPage}
-      />
-      <VideoGrid>
-        {videos.map((video) => (
-          <VideoGridItem key={video.id} video={video} />
-        ))}
-      </VideoGrid>
-      <LinkPager
-        pageUrl="/my-uploads"
-        total={total}
-        page={page}
-        perPage={perPage}
-      />
-    </main>
+    <div className="flex flex-col gap-4">
+      {videos.length === 0 && (
+        <NoVideosAlert message="Start by liking a video." />
+      )}
+      {videos.length > 0 && (
+        <>
+          <LinkPager
+            pageUrl="/my-uploads"
+            total={total}
+            page={page}
+            perPage={perPage}
+          />
+          <VideoGrid>
+            {videos.map((video) => (
+              <VideoGridItem key={video.id} video={video} />
+            ))}
+          </VideoGrid>
+          <LinkPager
+            pageUrl="/my-uploads"
+            total={total}
+            page={page}
+            perPage={perPage}
+          />
+        </>
+      )}
+    </div>
   );
 }

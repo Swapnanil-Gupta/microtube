@@ -14,7 +14,7 @@ export default function LinkPager({ pageUrl, total, page, perPage }: Props) {
   const noOfPages = Math.ceil(total / perPage);
 
   return (
-    <div className="flex items-center justify-end py-2 gap-1">
+    <div className="flex items-center justify-end gap-1">
       <Link
         href={page > 1 ? `${pageUrl}?page=${page - 1}&perPage=${perPage}` : "#"}
         role="link"

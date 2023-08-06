@@ -21,7 +21,7 @@ export default function ButtonPager({
   const noOfPages = Math.ceil(total / perPage);
 
   return (
-    <div className="flex items-center justify-end py-2 gap-1">
+    <div className="flex items-center justify-end gap-1">
       <Button
         variant="secondary"
         disabled={page <= 1}

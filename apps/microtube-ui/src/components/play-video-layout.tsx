@@ -10,18 +10,11 @@ import VideoLikeDislike from "./video-like-dislike";
 
 export default function PlayVideoLayout({ video }: { video: FullVideo }) {
   const { videoUrls } = video;
-  const exists480p = videoUrls
-    ? videoUrls.findIndex((v) => v.quality === "FSD" && v.url) !== -1
-    : false;
-  const exists360p = videoUrls
-    ? videoUrls.findIndex((v) => v.quality === "SD" && v.url) !== -1
-    : false;
+  const videoQualities = videoUrls?.map((q) => q.quality);
 
   const videoPlayerRef = useRef<HTMLVideoElement | null>(null);
   const [selectedVideoQuality, setSelectedVideoQuality] =
-    useState<VideoQuality | null>(
-      exists480p ? "FSD" : exists360p ? "SD" : null
-    );
+    useState<VideoQuality | null>(videoQualities ? videoQualities[0] : null);
   const videoUrl = selectedVideoQuality
     ? videoUrls?.find((v) => v.quality === selectedVideoQuality)?.url
     : null;
@@ -46,9 +39,8 @@ export default function PlayVideoLayout({ video }: { video: FullVideo }) {
           <VideoLikeDislike videoId={video.id} />
           <VideoQualitySelector
             videoUrl={videoUrl}
-            show480p={exists480p}
-            show360p={exists360p}
-            quality={selectedVideoQuality}
+            qualities={videoQualities}
+            selectedQuality={selectedVideoQuality}
             onChangeQuality={handleQualityChange}
           />
         </div>
