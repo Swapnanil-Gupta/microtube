@@ -20,6 +20,7 @@ enum VideoStatus {
 enum VideoQuality {
   SD // 360p
   FSD // 480p
+  HD // 720p
 }
 
 model Video {

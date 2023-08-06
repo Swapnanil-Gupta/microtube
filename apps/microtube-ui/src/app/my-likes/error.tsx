@@ -1,5 +1,7 @@
 "use client";
 
+import ErrorAlert from "@/components/error-alert";
+
 export default function Error() {
-  return <div>Some error occured.</div>;
+  return <ErrorAlert />;
 }

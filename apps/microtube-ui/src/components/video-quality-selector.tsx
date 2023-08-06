@@ -14,29 +14,31 @@ import Icons from "@/lib/icons";
 
 type Props = {
   videoUrl: string | null | undefined;
-  quality: VideoQuality | null | undefined;
-  show360p: boolean;
-  show480p: boolean;
+  selectedQuality: VideoQuality | null | undefined;
+  qualities: VideoQuality[] | undefined;
   onChangeQuality: (newQuality: VideoQuality) => void;
 };
 
 export default function VideoQualitySelector({
   videoUrl,
-  show360p,
-  show480p,
-  quality,
+  selectedQuality,
+  qualities,
   onChangeQuality,
 }: Props) {
   return (
     <div className="flex flex-row items-center gap-2">
-      {quality && (
-        <Select value={quality} onValueChange={onChangeQuality}>
+      {selectedQuality && (
+        <Select value={selectedQuality} onValueChange={onChangeQuality}>
           <SelectTrigger className="w-24">
             <SelectValue placeholder="Quality" />
           </SelectTrigger>
           <SelectContent>
-            {show480p && <SelectItem value="FSD">480p</SelectItem>}
-            {show360p && <SelectItem value="SD">360p</SelectItem>}
+            {qualities &&
+              qualities.map((q) => (
+                <SelectItem key={q} value={q}>
+                  {q}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       )}

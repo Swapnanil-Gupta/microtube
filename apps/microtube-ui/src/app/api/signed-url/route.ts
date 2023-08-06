@@ -17,9 +17,9 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const title = searchParams.get("title");
-  const fileName = searchParams.get("file_name");
-  const mimeType = searchParams.get("mime_type");
+  let title = searchParams.get("title");
+  let fileName = searchParams.get("file_name");
+  let mimeType = searchParams.get("mime_type");
 
   if (!title || !fileName || !mimeType) {
     return NextResponse.json<ErrorResponse>(
@@ -35,6 +35,9 @@ export async function GET(request: Request) {
   }
 
   try {
+    title = decodeURIComponent(title);
+    fileName = decodeURIComponent(fileName);
+    mimeType = decodeURIComponent(mimeType);
     const videoId = nanoid();
     const extension = fileName.split(".").pop();
     const s3FileName = `${videoId}.${extension}`;

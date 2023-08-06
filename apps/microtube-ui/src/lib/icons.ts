@@ -21,6 +21,8 @@ import {
   ThumbsDown,
   UserPlus,
   Heart,
+  Info,
+  AlertCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -47,6 +49,8 @@ const Icons = {
   dislike: ThumbsDown,
   uploader: UserPlus,
   myLikes: Heart,
+  info: Info,
+  error: AlertCircle,
 };
 
 export default Icons;

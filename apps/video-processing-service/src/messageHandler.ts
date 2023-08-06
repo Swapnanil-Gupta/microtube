@@ -1,9 +1,12 @@
 import { Message } from "@aws-sdk/client-sqs";
-import path from "path";
 import fs from "fs";
-import { downloadFile, getFileUrl, uploadFile } from "./lib/s3Client";
-import { generateThumbnail, getVideoMetadata, scaleVideo } from "./lib/ffmpeg";
+import { downloadFile } from "./lib/s3Client";
 import prisma from "./lib/prisma";
+import {
+  runProbeWorker,
+  runScaleWorker,
+  runThumbnailWorker,
+} from "./lib/workers";
 
 export default async function messageHandler(message: Message) {
   if (!message.Body) {
@@ -19,7 +22,7 @@ export default async function messageHandler(message: Message) {
     return;
   }
 
-  const [videoId, ext] = videoFilename.split(".");
+  const [videoId] = videoFilename.split(".");
   const tempDir = `./temp/${videoId}`;
   await prisma.video.update({
     data: {
@@ -30,60 +33,47 @@ export default async function messageHandler(message: Message) {
     },
   });
 
-  // TODO: Handle Error
   try {
-    console.info("Downloading video...");
+    console.info("Downloading video for processing...");
     const { savedPath: origVideoPath } = await downloadFile(
       videoFilename,
       tempDir
     );
+    console.info("Video downloaded. Starting video processing...");
 
-    // metadata
-    console.info("Probing video for metadata...");
-    const meta = await getVideoMetadata(origVideoPath);
-    await prisma.metadata.create({
-      data: {
+    await Promise.all([
+      runProbeWorker({
+        origVideoPath,
         videoId,
-        duration: meta.format.duration || null,
-      },
-    });
-
-    // 480p scaling
-    console.info("Scaling video...");
-    const video480pFilename = `${videoId}_480p.${ext}`;
-    const video480pPath = path.join(tempDir, video480pFilename);
-    await scaleVideo(origVideoPath, video480pPath, 480);
-    await uploadFile(video480pFilename, video480pPath);
-    await prisma.videoUrl.create({
-      data: {
-        videoId,
-        quality: "FSD",
-        url: getFileUrl(video480pFilename),
-      },
-    });
-
-    const video360pFilename = `${videoId}_360p.${ext}`;
-    const video360pPath = path.join(tempDir, video360pFilename);
-    await scaleVideo(origVideoPath, video360pPath, 360);
-    await uploadFile(video360pFilename, video360pPath);
-    await prisma.videoUrl.create({
-      data: {
-        videoId,
+      }),
+      runScaleWorker({
+        origVideoPath,
+        tempDir,
+        videoFilename,
         quality: "SD",
-        url: getFileUrl(video360pFilename),
-      },
-    });
+      }),
+      runScaleWorker({
+        origVideoPath,
+        tempDir,
+        videoFilename,
+        quality: "FSD",
+      }),
+      runScaleWorker({
+        origVideoPath,
+        tempDir,
+        videoFilename,
+        quality: "HD",
+      }),
+      runThumbnailWorker({
+        origVideoPath,
+        tempDir,
+        videoFilename,
+      }),
+    ]);
 
-    // Thumbnail generation
-    // TODO: FIX BLACK BARS
-    console.info("Generating thumbnail...");
-    const thumbnailFilename = `${videoId}_thumbnail.jpeg`;
-    const thumbnailPath = path.join(tempDir, thumbnailFilename);
-    await generateThumbnail(origVideoPath, thumbnailPath);
-    await uploadFile(`thumbnails/${thumbnailFilename}`, thumbnailPath);
+    console.info("Video processing completed");
     await prisma.video.update({
       data: {
-        thumbnailUrl: getFileUrl(`thumbnails/${thumbnailFilename}`),
         status: "PROCESSED",
       },
       where: {
@@ -91,6 +81,8 @@ export default async function messageHandler(message: Message) {
       },
     });
   } catch (err) {
+    console.error("Video processing failed");
+    console.error(err);
     await prisma.video.update({
       data: {
         status: "FAILED",
@@ -101,7 +93,7 @@ export default async function messageHandler(message: Message) {
     });
     throw err;
   } finally {
-    // cleanup
+    console.info("Cleaning up...");
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
 }

@@ -28,17 +28,12 @@ export default async function MyUploads({
     }
   );
   if (!response.ok) {
-  } // TODO: Handle error
+    throw new Error("Failed to fetch my uploads");
+  }
   const data = (await response.json()) as GetVideosResponse;
-  // TODO: Handle empty error
+  if (!data) {
+    throw new Error("Failed to fetch my uploads");
+  }
 
-  return (
-    <main className="py-8">
-      <h1 className="font-semibold text-3xl md:text-4xl mb-2">My Uploads</h1>
-      <p className="text-neutral-500 mb-4">
-        All the videos that you&apos;ve uploaded
-      </p>
-      <MyUploadsLayout initialData={data} page={page} perPage={perPage} />
-    </main>
-  );
+  return <MyUploadsLayout initialData={data} page={page} perPage={perPage} />;
 }
