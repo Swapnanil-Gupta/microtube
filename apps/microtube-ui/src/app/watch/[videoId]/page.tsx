@@ -14,8 +14,8 @@ export default async function Watch({
   if (!video || !video.videoUrls) return notFound();
 
   return (
-    <main className="py-8">
-      <p className="text-sm md:text-base text-neutral-500 mb-2">
+    <main>
+      <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 mb-2">
         You&apos;re watching
       </p>
       <h1 className="font-semibold text-3xl md:text-4xl mb-10 max-w-[900px]">

@@ -2,7 +2,7 @@ import { GetVideosResponse } from "@/types";
 import VideoGrid from "@/components/video-grid";
 import VideoGridItem from "@/components/video-grid-item";
 import LinkPager from "@/components/link-pager";
-import NoVideosAlert from "@/components/ui/no-videos-alert";
+import NoVideosAlert from "@/components/no-data-alert";
 
 export default async function Home({
   searchParams,
@@ -31,9 +31,11 @@ export default async function Home({
   }
 
   return (
-    <main className="py-8">
+    <main>
       <h1 className="font-semibold text-3xl md:text-4xl mb-2">Browse Videos</h1>
-      <p className="text-neutral-500 mb-12">Discover the most liked videos</p>
+      <p className="text-neutral-500 dark:text-neutral-400 mb-12">
+        Discover the most liked videos
+      </p>
       <div className="flex flex-col gap-4">
         {videos.length === 0 && (
           <NoVideosAlert message="Be the first to upload a video by signing in." />

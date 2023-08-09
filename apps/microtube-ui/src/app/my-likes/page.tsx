@@ -6,7 +6,7 @@ import VideoGrid from "@/components/video-grid";
 import VideoGridItem from "@/components/video-grid-item";
 import { GetVideosResponse } from "@/types";
 import LinkPager from "@/components/link-pager";
-import NoVideosAlert from "@/components/ui/no-videos-alert";
+import NoVideosAlert from "@/components/no-data-alert";
 
 export default async function MyLikes({
   searchParams,
