@@ -2,11 +2,12 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import ThemeToggle from "./theme-toggle";
 import Icons from "@/lib/icons";
+import UserActions from "./user-actions";
 
 export default async function SiteHeader() {
   return (
-    <header className="bg-white dark:bg-neutral-950">
-      <div className="container flex py-3 items-center space-x-4 sm:justify-between sm:space-x-0">
+    <header className="py-3 flex flex-col gap-2 bg-background border-b">
+      <div className="container flex items-center space-x-4 sm:justify-between sm:space-x-0">
         <Link href="/" className="inline-block font-bold">
           <span className="flex items-center">
             <Icons.youtube className="h-5 w-5 mr-2" />
@@ -34,6 +35,7 @@ export default async function SiteHeader() {
           </nav>
         </div>
       </div>
+      <UserActions />
     </header>
   );
 }

@@ -8,7 +8,6 @@ import TailwindIndicator from "@/components/tailwind-indicator";
 import SiteHeader from "@/components/site-header";
 import { Toaster } from "@/components/ui/toaster";
 import SiteFooter from "@/components/site-footer";
-import UserActions from "@/components/user-actions";
 
 export const metadata: Metadata = {
   title: "Microtube",
@@ -24,15 +23,14 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={clsx(
-          "min-h-screen bg-white dark:bg-neutral-950 antialiased",
+          "min-h-screen bg-background antialiased",
           fontSans.className
         )}
       >
         <Providers>
           <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
-            <UserActions />
-            <div className="flex-1 container">{children}</div>
+            <div className="flex-1 container py-4 md:py-8">{children}</div>
             <SiteFooter />
           </div>
         </Providers>

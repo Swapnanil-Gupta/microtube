@@ -9,7 +9,7 @@ import { GetVideosResponse } from "@/types";
 import useFetchMyUploads from "@/hooks/useFetchMyUploads";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import NoVideosAlert from "./ui/no-videos-alert";
+import NoVideosAlert from "./no-data-alert";
 
 type Props = {
   initialData: GetVideosResponse;

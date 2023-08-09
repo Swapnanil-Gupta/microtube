@@ -6,7 +6,7 @@ export default async function RootLayout({
   params: { searchTerm: string };
 }) {
   return (
-    <main className="py-8">
+    <main>
       <h1 className="font-semibold text-3xl md:text-4xl mb-12">
         Showing results for &quot;{searchTerm}&quot;
       </h1>

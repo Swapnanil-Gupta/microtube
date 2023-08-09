@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { Card, CardContent } from "./ui/card";
 import { AspectRatio } from "./ui/aspect-ratio";
 import { Skeleton } from "./ui/skeleton";
 import Icons from "@/lib/icons";
@@ -51,54 +52,51 @@ export default function VideoGridItem({
 
   return (
     <Link href={`/watch/${video.id}`} key={video.id}>
-      <div
-        className={clsx(
-          "flex flex-col gap-y-3 rounded-lg group bg-neutral-100 dark:bg-neutral-800 shadow-md hover:shadow-lg transition-shadow duration-300 p-2 md:p-3",
-          status === "FAILED" && "bg-neutral-100 dark:bg-neutral-800"
-        )}
-      >
-        <div className="relative overflow-hidden rounded-lg">
-          <AspectRatio ratio={16 / 9}>{thumbnail[status]}</AspectRatio>
-          <span
-            className={clsx(
-              "absolute text-white bg-black/75 px-2 py-1 rounded-lg flex items-center gap-1",
-              status === "PROCESSED"
-                ? "bottom-2 right-2"
-                : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            )}
-          >
-            {icons[status]}
-            {label[status]}
-          </span>
-        </div>
-        <div className="flex flex-col gap-1">
-          <p className="font-semibold line-clamp-1 text-base md:text-lg">
-            {video.title}
-          </p>
-          {showUploadedBy && (
-            <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400 font-medium">
-              <Icons.user className="h-4 w-4 md:h-5 md:w-5" />
-              {video.userId}
+      <Card className="group">
+        <CardContent className="flex flex-col gap-y-3 p-2 md:p-3">
+          <div className="relative overflow-hidden rounded-lg">
+            <AspectRatio ratio={16 / 9}>{thumbnail[status]}</AspectRatio>
+            <span
+              className={clsx(
+                "absolute text-white bg-black/75 px-2 py-1 rounded-lg flex items-center gap-1",
+                status === "PROCESSED"
+                  ? "bottom-2 right-2"
+                  : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+              )}
+            >
+              {icons[status]}
+              {label[status]}
             </span>
-          )}
-          <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400">
-            <Icons.ago className="h-4 w-4 md:h-5 md:w-5" />
-            {formatDistanceToNow(new Date(video.uploadedAt))} ago
-          </span>
-          {showStats && (
-            <div className="flex items-center pt-1 text-xs md:text-base gap-4 text-neutral-500 dark:text-neutral-400">
-              <span className="flex items-center gap-2">
-                <Icons.like className="h-4 md:w-4" />
-                {video._count.likes}
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="font-semibold line-clamp-1 text-base md:text-lg">
+              {video.title}
+            </p>
+            {showUploadedBy && (
+              <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400 font-medium">
+                <Icons.user className="h-4 w-4 md:h-5 md:w-5" />
+                {video.userId}
               </span>
-              <span className="flex items-center gap-2">
-                <Icons.dislike className="h-4 w-4" />
-                {video._count.dislikes}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
+            )}
+            <span className="text-xs md:text-base flex gap-1 items-center text-neutral-500 dark:text-neutral-400">
+              <Icons.ago className="h-4 w-4 md:h-5 md:w-5" />
+              {formatDistanceToNow(new Date(video.uploadedAt))} ago
+            </span>
+            {showStats && (
+              <div className="flex items-center pt-1 text-xs md:text-base gap-4 text-neutral-500 dark:text-neutral-400">
+                <span className="flex items-center gap-2">
+                  <Icons.like className="h-4 w-4" />
+                  {video._count.likes}
+                </span>
+                <span className="flex items-center gap-2">
+                  <Icons.dislike className="h-4 w-4" />
+                  {video._count.dislikes}
+                </span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 }

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import useMutateComments from "@/hooks/useMutateComments";
 import Icons from "@/lib/icons";
 import ButtonPager from "./button-pager";
+import NoDataAlert from "./no-data-alert";
 
 export default function VideoComments({ videoId }: { videoId: string }) {
   const session = useSession();
@@ -76,32 +77,39 @@ export default function VideoComments({ videoId }: { videoId: string }) {
       {!comments.isLoading && comments.isError && (
         <div>Failed to fetch comments</div>
       )}
-      {!comments.isLoading && !comments.isError && (
-        <div className="flex flex-col gap-4">
-          {comments.data.data.map((comment) => (
-            <div className="flex items-center gap-2" key={comment.id}>
-              <div className="p-2 md:p-3.5 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center rounded-full">
-                <Icons.user className="h-4 w-4 md:h-6 md:w-6" />
-                <span className="sr-only">User</span>
+      {!comments.isLoading &&
+        !comments.isError &&
+        comments.data.data.length === 0 && (
+          <NoDataAlert message="No comments yet." />
+        )}
+      {!comments.isLoading &&
+        !comments.isError &&
+        comments.data.data.length > 0 && (
+          <div className="flex flex-col gap-4">
+            {comments.data.data.map((comment) => (
+              <div className="flex items-center gap-2" key={comment.id}>
+                <div className="p-2 md:p-3.5 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center rounded-full">
+                  <Icons.user className="h-4 w-4 md:h-6 md:w-6" />
+                  <span className="sr-only">User</span>
+                </div>
+                <div>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-xs">
+                    <span className="font-semibold">{comment.userId}</span> |{" "}
+                    {formatDistanceToNow(new Date(comment.createdAt))} ago
+                  </p>
+                  <p className="text-sm md:text-base">{comment.message}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-neutral-500 dark:text-neutral-400 text-xs">
-                  <span className="font-semibold">{comment.userId}</span> |{" "}
-                  {formatDistanceToNow(new Date(comment.createdAt))} ago
-                </p>
-                <p className="text-sm md:text-base">{comment.message}</p>
-              </div>
-            </div>
-          ))}
-          <ButtonPager
-            page={page}
-            perPage={perPage}
-            total={comments.data.total}
-            onNext={(newPage) => setPage(newPage)}
-            onPrev={(newPage) => setPage(newPage)}
-          />
-        </div>
-      )}
+            ))}
+            <ButtonPager
+              page={page}
+              perPage={perPage}
+              total={comments.data.total}
+              onNext={(newPage) => setPage(newPage)}
+              onPrev={(newPage) => setPage(newPage)}
+            />
+          </div>
+        )}
     </div>
   );
 }
